@@ -93,7 +93,7 @@ header {
   background-color: rgb(105, 38, 38);
 }
 
-button[disabled] {
+button {
   cursor: default;
   background: #c0c7cf;
 }
