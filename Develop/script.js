@@ -1,119 +1,105 @@
-// Create possible data for passwords 
+//Welcome to the JS file of The Coolest Password Generator!
 
-character = "/", "\:", "\;", " < ", "=", " > ", " ? ", "@", "[", "\\", "]", ["!", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", " ^ ", "_", "`", "{", "|", "}", "~"];
+console.log('You can generate a password!');
 
-abc = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+// Compile possible data for passwords 
 
-space = [ ];
+var symbol = ["!", "#", "$", "%", "&", ">", "?", "@", "[", "*", "]", "!", "/", "%", "&", "'", "(", ")", "+", ",", "-", ".", "^", "_", "`", "{", "|", "}", "~"];
 
-number = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+var number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
-// User input variables
+var abc = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
-var enter;
-var pwNumeric;
-var pwCharacter;
-var pwUpperCase;
-var pwLowerCase;
-var choice;
-
-// Capitalizes letters
-
-var makeUpper = function (x) {
-  return x.toUpperCase();
-};
-abc2 = abc.map(makeUpper);
+//Generate Password button
 
 var get = document.querySelector("#generate");
 
 get.addEventListener("click", function () {
-  ps = generatePassword();
-  document.getElementById("password").placeholder = ps;
-})
+  pw = generatePassword();
+});
+
+// Creates uppercase array
+
+var makeUpper = function (x) {
+  return x.toUpperCase();
+};
+var abc2 = abc.map(makeUpper);
 
 // Password generator functions begin here
-// User is prompted about preferred characters
 
 function generatePassword() {
-  enter = parseInt(prompt("Please choose how many characters you'd like your password to be. You may choose any number between 8 and 128."));
-  if (!enter) {
-    alert("Please enter a number between 8 and 128.")
+
+  // User input variables
+
+  var passwordLength;
+  var pwSymbol;
+  var pwNumeric;
+  var pwUpperCase;
+  var pwLowerCase;
+  var passwordCharacterSet = [];
+
+  passwordLength = parseInt(prompt("Please choose how many characters you'd like your password to be. You may choose any number between 8 and 128."));
+  if (!passwordLength) {
+    alert("Invalid selection. Please enter a number between 8 and 128.")
   
-  } else if (enter < 8 || enter > 128) {
-    enter = parseInt(prompt("Please enter a number between 8 and 128."));
-  
+  } else if (passwordLength < 8 || passwordLength > 128) {
+    alert("Invalid selection. Please enter a number between 8 and 128.");
+    return;
+
   } else {
+    pwSymbol = confirm("Special characters?");
     pwNumeric = confirm("Numbers?");
-    pwCharacter = confirm("Special characters?");
     pwUpperCase = confirm("Upper case letters?");
     pwLowerCase = confirm("Lower case letters?");
   };
 
   // User selections use the four prompts to generate concatenated characters below
+  // Adds selectors
+
+  if (pwSymbol) {
+    passwordCharacterSet = passwordCharacterSet.concat(symbol);
+  }
+
+  if (pwUpperCase) {
+    passwordCharacterSet = passwordCharacterSet.concat(abc2); 
+  }
+
+  if (pwLowerCase) {
+    passwordCharacterSet = passwordCharacterSet.concat(abc);
+  }
+
+  if (pwNumeric) {
+    passwordCharacterSet = passwordCharacterSet.concat(number);
+  }
 
   // When no criteria are selected user receives error message
   
-  if (!pwCharacter && !pwNumeric && !pwUpperCase && pwLowerCase) {
-    choice = alert("Please select desired characters for your password.");
+  if (passwordCharacterSet.length === 0) {
+    alert("Invalid selection. Please select at least one option for your password.");
+    passwordLength = 0;
+  }
+  // Create random selection for all variables
+  var password = [];
+  for (var i = 0; i < passwordLength; i++) {
+    var randomCharacter = passwordCharacterSet[Math.floor(Math.random() * passwordCharacterSet.length)];
+    password.push(randomCharacter);
   }
 
-  // All criteria are selected
-  
-  else if (pwCharacter && pwNumeric && pwUpperCase && pwLowerCase) {
-    choice = character.concat(number, abc, abc2);
-  }
-
-  // Some criteria are selected
-
-  else if (pwCharacter && pwNumeric && pwUpperCase) {
-    choice = character.concat(number, abc2);
-  }
-
-  else if (pwCharacter && pwLowerCase && pwNumeric) {
-    choice = character.concat(abc, number);
-  }
-
-  else if (pwCharacter && pwLowerCase && pwUpperCase) {
-    choice = character.concat(abc, abc2);
-  }
-
-  else if (pwLowerCase && pwUpperCase && pwNumeric) {
-    choice = abc.concat(abc2, number);
-  }
-
-  
-  var password = "";
-  console.log('generate a password.');
-
-  // Loop to repeat, selecting random character and appending it to string loop until our string reaches the chosen length.
-
-  password += "a";
-
-  password += "r";
-
-  password += "5";
-
-  password += "]";
-
-  return password;
-
+  // Puts characters into one string to place into password
+  var pw = password.join("");
+  writePassword(pw);
+  return pw;
 }
 
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 
 // Write password to the #password input
-function writePassword() {
-  var password = generatePassword();
+function writePassword(pw) {
   var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
+  passwordText.value = pw;
 
 }
-
-// Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
-
 //Copies new password to user's clipboard 
 var copy = document.querySelector("#copy");
 copy.addEventListener("click", function () {
